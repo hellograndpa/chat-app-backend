@@ -8,10 +8,20 @@ const userSchema = new Schema(
     lastName: { type: String, required: true },
     hashedPassword: { type: String, required: true },
     email: { type: String, require: true, unique: true },
-    location: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
-    avatar: { type: String, default: 'image.jpg' },
-    city: { type: String },
-    age: { type: Number },
+    location: {
+      type: {
+        type: String, // Don't do `{ location: { type: String } }`
+        enum: ['Point'], // 'location.type' must be 'Point'
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+      avatar: { type: String, default: 'image.jpg' },
+      city: { type: String },
+      age: { type: Number },
+    },
   },
   {
     timestamps: {

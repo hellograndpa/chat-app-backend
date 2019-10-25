@@ -6,7 +6,17 @@ const roomSchema = new Schema(
   {
     roomName: { type: String, required: true },
     description: { type: String, required: true },
-    location: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
+    location: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+    },
     adminList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     userAdmitList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     userBanList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
