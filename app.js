@@ -17,6 +17,7 @@ mongoose.connect(process.env.MONGO_URL, {
 
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
+const roomsRouter = require('./routes/rooms');
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use((req, res, next) => {
 
 app.use('/', authRouter);
 app.use('/api/v01/user', usersRouter);
+app.use('/api/v01/room', roomsRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

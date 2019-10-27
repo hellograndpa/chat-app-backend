@@ -24,11 +24,13 @@ router.post(
     const { userName, email, password } = res.locals.auth;
     try {
       const user = await User.findOne({ email });
+
       if (user) {
         return res.status(422).json({ code: 'username-not-unique' });
       }
 
       const salt = bcrypt.genSaltSync(bcryptSalt);
+
       const hashedPassword = bcrypt.hashSync(password, salt);
 
       const newUser = await User.create({ userName, email, hashedPassword });
