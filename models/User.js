@@ -5,22 +5,21 @@ const { Schema } = mongoose;
 const userSchema = new Schema(
   {
     userName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    lastName: { type: String },
     hashedPassword: { type: String, required: true },
     email: { type: String, require: true, unique: true },
+    avatar: { type: String, default: 'image.jpg' },
+    city: { type: String },
+    age: { type: Number },
+    active: Boolean,
     location: {
       type: {
         type: String, // Don't do `{ location: { type: String } }`
         enum: ['Point'], // 'location.type' must be 'Point'
-        required: true,
       },
       coordinates: {
         type: [Number],
-        required: true,
       },
-      avatar: { type: String, default: 'image.jpg' },
-      city: { type: String },
-      age: { type: Number },
     },
   },
   {

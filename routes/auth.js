@@ -17,41 +17,57 @@ router.get('/me', (req, res, next) => {
   }
 });
 
-router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
-  const { username, password } = res.locals.auth;
-  try {
-    const user = await User.findOne({ username });
-    if (user) {
-      return res.status(422).json({ code: 'username-not-unique' });
+router.post(
+  '/signup',
+  checkUsernameAndPasswordNotEmpty,
+  async (req, res, next) => {
+    const { userName, email, password } = res.locals.auth;
+    try {
+      const user = await User.findOne({ email });
+      if (user) {
+        return res.status(422).json({ code: 'username-not-unique' });
+      }
+
+      const salt = bcrypt.genSaltSync(bcryptSalt);
+      const hashedPassword = bcrypt.hashSync(password, salt);
+
+      const newUser = await User.create({ userName, email, hashedPassword });
+      req.session.currentUser = newUser;
+      return res.json(newUser);
+    } catch (error) {
+      next(error);
     }
+  },
+);
 
-    const salt = bcrypt.genSaltSync(bcryptSalt);
-    const hashedPassword = bcrypt.hashSync(password, salt);
-
-    const newUser = await User.create({ username, hashedPassword });
-    req.session.currentUser = newUser;
-    return res.json(newUser);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post('/login', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
-  const { username, password } = res.locals.auth;
-  try {
-    const user = await User.findOne({ username });
-    if (!user) {
+router.post(
+  '/login',
+  checkUsernameAndPasswordNotEmpty,
+  async (req, res, next) => {
+    const {
+ email, password, latitude, longitude 
+} = res.locals.auth;
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ code: 'not-found' });
+      }
+      if (bcrypt.compareSync(password, user.hashedPassword)) {
+        req.session.currentUser = user;
+        await User.findByIdAndUpdate(user._id, {
+          location: {
+            coordinates: [latitude, longitude],
+            type: 'Point',
+          },
+        });
+        return res.json(user);
+      }
       return res.status(404).json({ code: 'not-found' });
+    } catch (error) {
+      next(error);
     }
-    if (bcrypt.compareSync(password, user.hashedPassword)) {
-      req.session.currentUser = user;
-      return res.json(user);
-    }
-    return res.status(404).json({ code: 'not-found' });
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+);
 
 router.get('/logout', (req, res, next) => {
   req.session.destroy((err) => {
