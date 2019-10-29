@@ -4,13 +4,21 @@ const { Schema } = mongoose;
 
 const chatUserSchema = new Schema(
   {
-    userListChat01: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    userListChat02: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    userChat01: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    userChat02: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    status: {
+      type: String,
+      enum: ['pending', 'active', 'finished', 'refused'],
+      default: 'pending',
+    },
     conversation: [
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         text: String,
-        timestamps: { createdAt: 'created_at' },
+        created: {
+          type: Date,
+          default: () => Date.now(),
+        },
       },
     ],
   },

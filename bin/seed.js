@@ -39,6 +39,19 @@ const users = Array.from(
   }),
 );
 
+const chatUser = Array.from(
+  {
+    length: 50,
+  },
+  () => ({
+    userListChat01: faker.name.firstName(),
+    userListChat02: faker.name.lastName(),
+    petitionerUser: true,
+    aceptattionUser: true,
+    conversation: {},
+  }),
+);
+
 User.collection
   .drop()
   .then(() => {
