@@ -18,7 +18,13 @@ const checkUsernameAndPasswordNotEmpty = (req, res, next) => {
   }
 };
 
+const metersToRadian = (meters) => {
+  const earthRadiusInKm = 6378.1;
+  return meters / earthRadiusInKm;
+};
+
 module.exports = {
   checkIfLoggedIn,
   checkUsernameAndPasswordNotEmpty,
+  metersToRadian,
 };

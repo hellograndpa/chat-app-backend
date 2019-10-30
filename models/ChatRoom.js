@@ -8,7 +8,10 @@ const chatSchema = new Schema(
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         text: String,
-        timestamps: { createdAt: 'created_at' },
+        created: {
+          type: Date,
+          default: () => Date.now(),
+        },
       },
     ],
   },
@@ -20,6 +23,6 @@ const chatSchema = new Schema(
   },
 );
 
-const Chat = mongoose.model('Chat', chatSchema);
+const ChatRoom = mongoose.model('ChatRoom', chatSchema);
 
-module.exports = Chat;
+module.exports = ChatRoom;
