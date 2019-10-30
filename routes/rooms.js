@@ -18,7 +18,7 @@ async function createChat() {
 }
 
 // Get rooms available from location
-router.get('/', async (req, res, next) => {
+router.get('/', checkIfLoggedIn, async (req, res) => {
   try {
     const { lat, long, radiusInMeters } = req.query;
     const coords = [parseFloat(lat), parseFloat(long)];
@@ -35,7 +35,20 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.post('/', checkIfLoggedIn, async (req, res, next) => {
+// Get a room
+router.get('/:id', checkIfLoggedIn, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const room = await Room.findById(id).populate('chat');
+
+    res.json(room);
+  } catch (error) {
+    res.status(300).json({ code: 'error on getting a room' });
+  }
+});
+
+router.post('/', checkIfLoggedIn, async (req, res) => {
   let newRoom = {};
   try {
     const {
