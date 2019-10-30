@@ -72,11 +72,10 @@ router.put('/:id', async (req, res, next) => {
       },
     });
 
-    req.flash('info', 'Your profile has been update');
-    res.redirect('/user/step-1');
+    res.status(200).json({ code: 'modificado' });
   } catch (error) {
-    req.flash('error', 'Some error happen - Please try again');
-    res.redirect('/user/step-1');
+    console.log('Some error happen - Please try again');
+    res.redirect('/');
   }
 });
 
