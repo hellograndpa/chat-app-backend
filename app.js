@@ -20,6 +20,7 @@ const usersRouter = require('./routes/users');
 const roomsRouter = require('./routes/rooms');
 const socketsRouter = require('./routes/sockets');
 const chatUserRouter = require('./routes/chatUser');
+const chatRoomRouter = require('./routes/chatRoom');
 
 const app = express();
 
@@ -61,6 +62,7 @@ app.use('/api/v01/user', usersRouter);
 app.use('/api/v01/room', roomsRouter);
 app.use('/api/v01/sockets', socketsRouter);
 app.use('/api/v01/chat-user', chatUserRouter);
+app.use('/api/v01/chat-room', chatRoomRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

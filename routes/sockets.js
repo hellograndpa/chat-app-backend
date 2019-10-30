@@ -16,7 +16,7 @@ router.post('/', async (req, res, next) => {
       socketId,
     });
   } catch (error) {
-    next(error);
+    res.status(300).json({ code: 'error saving soket on bd' });
   }
   return res.json(newSocket);
 });
