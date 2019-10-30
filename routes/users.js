@@ -7,8 +7,17 @@ const router = express.Router();
 // Get user listing all
 router.get('/', async (req, res, next) => {
   try {
+    const { lat, long, radiusInMeters } = req.query;
+    const coords = [parseFloat(lat), parseFloat(long)];
+
     const users = await User.find(
-      {},
+      {
+        'location.coordinates': {
+          $geoWithin: {
+            $centerSphere: [coords, metersToRadian(radiusInMeters)],
+          },
+        },
+      },
       {
         _id: 1,
         userName: 1,

@@ -88,7 +88,6 @@ router.put('/:id/:status', async (req, res, next) => {
     if (status !== 'active' && status !== 'finished' && status !== 'refused') {
       res.status(300).json({ code: 'status is not correct' });
     }
-
     if (
       (status === 'active' || status === 'refused')
       && userId != chatUser.userChat02
@@ -97,7 +96,6 @@ router.put('/:id/:status', async (req, res, next) => {
         .status(300)
         .json({ code: `${userId} ${chatUser.userChat02}no eres usuario dos` });
     }
-
     if (userId != chatUser.userChat02 && userId != chatUser.userChat01) {
       res.status(300).json({ code: 'user is not correct' });
     }
