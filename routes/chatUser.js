@@ -17,8 +17,8 @@ router.post('/', async (req, res, next) => {
     return res.json(newChatUser);
   } catch (error) {
     console.log('Some error happen - Please try again');
-    res.redirect('/');
   }
+  res.redirect('/');
 });
 
 // get chat between users
