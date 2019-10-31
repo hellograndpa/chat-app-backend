@@ -4,23 +4,41 @@
  * Module dependencies.
  */
 
-let app = require('../app');
-let debug = require('debug')('http:server');
-let http = require('http');
+const app = require('../app');
+const debug = require('debug')('http:server');
+const http = require('http');
+
+const socketIO = require('socket.io');
 
 /**
  * Get port from environment and store in Express.
  */
 
-let port = normalizePort(process.env.PORT || '3001');
+const port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-let server = http.createServer(app);
+const server = http.createServer(app);
 
+const io = socketIO(server);
+
+io.on('connection', (socket) => {
+  console.log('User connected');
+
+  socket.on('chat', (text) => {
+    // once we get a 'change color' event from one of our clients, we will send it to the rest of the clients
+    // we make use of the socket.emit method again with the argument given to use from the callback function above
+
+    io.sockets.emit('chat', text);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -34,7 +52,7 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-  let port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -58,16 +76,16 @@ function onError(error) {
     throw error;
   }
 
-  let bind = typeof port === 'string' ? `Pipe ${  port}` : `Port ${  port}`;
+  const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(`${bind  } requires elevated privileges`);
+      console.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(`${bind  } is already in use`);
+      console.error(`${bind} is already in use`);
       process.exit(1);
       break;
     default:
@@ -80,7 +98,7 @@ function onError(error) {
  */
 
 function onListening() {
-  let addr = server.address();
-  let bind = typeof addr === 'string' ? `pipe ${  addr}` : `port ${  addr.port}`;
-  debug(`Listening on ${  bind}`);
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+  debug(`Listening on ${bind}`);
 }
