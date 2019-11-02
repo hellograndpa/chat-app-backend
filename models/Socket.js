@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const socketSchema = new Schema(
   {
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true },
     socketId: String,
   },
   {
