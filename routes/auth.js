@@ -21,7 +21,7 @@ router.post(
   '/signup',
   checkUsernameAndPasswordNotEmpty,
   async (req, res, next) => {
-    const { userName, email, password } = res.locals.auth;
+    const { username, email, password } = res.locals.auth;
     try {
       const user = await User.findOne({ email });
 
@@ -33,7 +33,11 @@ router.post(
 
       const hashedPassword = bcrypt.hashSync(password, salt);
 
-      const newUser = await User.create({ userName, email, hashedPassword });
+      const newUser = await User.create({
+        userName: username,
+        email,
+        hashedPassword,
+      });
       req.session.currentUser = newUser;
       return res.json(newUser);
     } catch (error) {
