@@ -34,7 +34,7 @@ router.get('/:userId', async (req, res, next) => {
         conversation: 1,
         status: 1,
       },
-    );
+    ).populate('userChat01 userChat02');
     if (chatUser) {
       console.log('TCL: chatUser', chatUser);
 
