@@ -78,19 +78,25 @@ router.post('/', checkIfLoggedIn, async (req, res) => {
     const userId = req.session.currentUser._id;
     const filter = { single, family, pet };
     const chat = await createChat();
-    newRoom = await Room.create({
-      roomName,
-      description,
-      location,
-      avatar,
-      city,
-      chat,
-      privateRoom,
-      adminList: [userId],
-      numMaxUser,
-      theme,
-      filter,
-    });
+    try {
+      newRoom = await Room.create({
+        roomName,
+        description,
+        location,
+        avatar,
+        city,
+        chat,
+        privateRoom,
+        adminList: [userId],
+        numMaxUser,
+        theme,
+        filter,
+      });
+      res.status(200).json(newRoom);
+    } catch (error) {
+      console.log(error);
+      res.status(300).json({ code: error });
+    }
   } catch (error) {
     res.status(300).json({ code: 'error on creating the room' });
   }
