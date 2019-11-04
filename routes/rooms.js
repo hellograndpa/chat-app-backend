@@ -18,10 +18,11 @@ async function createChat() {
 }
 
 // Get rooms available from location
-router.get('/', checkIfLoggedIn, async (req, res) => {
+router.post('/', checkIfLoggedIn, async (req, res) => {
   try {
-    const { lat, long, radiusInMeters } = req.query;
-    const coords = [parseFloat(lat), parseFloat(long)];
+    const { latitude, longitude, radiusInMeters } = req.body;
+
+    const coords = [parseFloat(latitude), parseFloat(longitude)];
 
     const rooms = await Room.find({
       'location.coordinates': {
