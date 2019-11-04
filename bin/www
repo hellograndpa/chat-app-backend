@@ -4,11 +4,11 @@
  * Module dependencies.
  */
 
-const app = require('../app');
 const debug = require('debug')('http:server');
 const http = require('http');
 
 const socketIO = require('socket.io');
+const app = require('../app');
 
 /**
  * Get port from environment and store in Express.
@@ -26,13 +26,8 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 io.on('connection', (socket) => {
-  console.log('User connected');
-
-  socket.on('chat', (text) => {
-    // once we get a 'change color' event from one of our clients, we will send it to the rest of the clients
-    // we make use of the socket.emit method again with the argument given to use from the callback function above
-
-    io.sockets.emit('chat', text);
+  socket.on('chat-message', (message) => {
+    io.sockets.emit(message.chatId, message);
   });
 
   socket.on('disconnect', () => {

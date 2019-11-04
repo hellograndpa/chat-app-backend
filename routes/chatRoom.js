@@ -10,9 +10,13 @@ router.put('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const conversation = { user: req.session.currentUser._id, text };
-    const chat = await ChatRoom.findByIdAndUpdate(id, {
-      $push: { conversation },
-    });
+    const chat = await ChatRoom.findByIdAndUpdate(
+      id,
+      {
+        $push: { conversation },
+      },
+      { new: true },
+    );
     res.json(chat);
   } catch (error) {
     res.status(300).json({ code: 'error on posting a chat' });

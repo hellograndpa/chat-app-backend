@@ -22,7 +22,7 @@ const roomSchema = new Schema(
     userBanList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     avatar: { type: String, default: 'image.jpg' },
     city: { type: String },
-    chat: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat' },
+    chat: { type: mongoose.Schema.Types.ObjectId, ref: 'ChatRoom' },
     privateRoom: Boolean,
     numMaxUser: Number,
     theme: String,

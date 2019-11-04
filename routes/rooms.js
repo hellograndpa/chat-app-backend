@@ -48,9 +48,8 @@ router.get('/me/:userId', checkIfLoggedIn, async (req, res) => {
 router.get('/:id', checkIfLoggedIn, async (req, res) => {
   try {
     const { id } = req.params;
-
     const room = await Room.findById(id).populate('chat');
-
+    console.log(room);
     res.json(room);
   } catch (error) {
     res.status(300).json({ code: 'error on getting a room' });
@@ -94,7 +93,6 @@ router.post('/', checkIfLoggedIn, async (req, res) => {
       });
       res.status(200).json(newRoom);
     } catch (error) {
-      console.log(error);
       res.status(300).json({ code: error });
     }
   } catch (error) {
