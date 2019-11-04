@@ -26,6 +26,7 @@ const roomSchema = new Schema(
     privateRoom: Boolean,
     numMaxUser: Number,
     theme: String,
+    language: String,
     filter: {
       single: Boolean,
       family: Boolean,
