@@ -21,7 +21,7 @@ router.post(
   '/signup',
   checkUsernameAndPasswordNotEmpty,
   async (req, res, next) => {
-    const { username, email, password } = res.locals.auth;
+    const { userName, email, password } = res.locals.auth;
     try {
       const user = await User.findOne({ email });
 
@@ -34,7 +34,7 @@ router.post(
       const hashedPassword = bcrypt.hashSync(password, salt);
 
       const newUser = await User.create({
-        userName: username,
+        userName,
         email,
         hashedPassword,
       });

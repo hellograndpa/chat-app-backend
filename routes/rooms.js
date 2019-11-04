@@ -36,6 +36,15 @@ router.get('/', checkIfLoggedIn, async (req, res) => {
 });
 
 // Get a room
+router.get('/me/:userId', checkIfLoggedIn, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const room = await Room.find({ adminList: { $in: [userId] } });
+    res.json(room);
+  } catch (error) {
+    res.status(300).json({ code: 'error on getting a room' });
+  }
+});
 router.get('/:id', checkIfLoggedIn, async (req, res) => {
   try {
     const { id } = req.params;

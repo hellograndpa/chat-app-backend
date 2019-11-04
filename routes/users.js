@@ -4,6 +4,8 @@ const User = require('../models/User');
 
 const router = express.Router();
 
+const { checkIfLoggedIn, metersToRadian } = require('../middlewares');
+
 // Get user listing all
 router.get('/', async (req, res, next) => {
   try {

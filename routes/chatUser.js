@@ -22,7 +22,33 @@ router.post('/', async (req, res, next) => {
 });
 
 // get chat between users
-router.get('/:id', async (req, res, next) => {
+router.get('/:userId', async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    const chatUser = await ChatUser.find(
+      { $or: [{ userChat01: userId }, { userChat02: userId }] },
+      {
+        _id: 1,
+        userChat01: 1,
+        userChat02: 1,
+        conversation: 1,
+        status: 1,
+      },
+    );
+    if (chatUser) {
+      console.log('TCL: chatUser', chatUser);
+
+      res.json(chatUser);
+    } else {
+      res.status(404).json({ code: 'no existe' });
+    }
+  } catch (error) {
+    console.log('Some error happen - Please try again');
+    res.redirect('/');
+  }
+});
+
+router.get('/me/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const chatUser = await ChatUser.findById(
@@ -44,8 +70,6 @@ router.get('/:id', async (req, res, next) => {
     res.redirect('/');
   }
 });
-
-module.exports = router;
 
 // update the data  // use req.body
 router.put('/:id', async (req, res, next) => {

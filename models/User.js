@@ -14,7 +14,7 @@ const userSchema = new Schema(
     active: Boolean,
     location: {
       type: {
-        type: String, // Don't do `{ location: { type: String } }`
+        type: String,
         enum: ['Point'], // 'location.type' must be 'Point'
       },
       coordinates: {
