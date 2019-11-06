@@ -1,6 +1,7 @@
 const express = require('express');
 
 const ChatRoom = require('../models/ChatRoom');
+const User = require('../models/User');
 
 const router = express.Router();
 
@@ -8,7 +9,15 @@ const router = express.Router();
 router.put('/:id', async (req, res, next) => {
   const { text } = req.body;
   const { id } = req.params;
+
   try {
+    const user = await User.findById(req.session.currentUser._id);
+
+    const returnedConversation = {
+      user,
+      text,
+    };
+
     const conversation = { user: req.session.currentUser._id, text };
     const chat = await ChatRoom.findByIdAndUpdate(
       id,
@@ -16,7 +25,10 @@ router.put('/:id', async (req, res, next) => {
         $push: { conversation },
       },
       { new: true },
-    );
+    ).populate('conversation');
+
+    global.io.sockets.emit(id, returnedConversation);
+
     res.json(chat);
   } catch (error) {
     res.status(300).json({ code: 'error on posting a chat' });

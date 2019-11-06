@@ -1,5 +1,7 @@
 const express = require('express');
 
+const mongoose = require('mongoose');
+
 const Room = require('../models/Room');
 
 const ChatRoom = require('../models/ChatRoom');
@@ -36,7 +38,7 @@ router.post('/', checkIfLoggedIn, async (req, res) => {
   }
 });
 
-// Get a room
+// Get rooms where i'm
 router.get('/me/:userId', checkIfLoggedIn, async (req, res) => {
   try {
     const { userId } = req.params;
@@ -46,18 +48,24 @@ router.get('/me/:userId', checkIfLoggedIn, async (req, res) => {
     res.status(300).json({ code: 'error on getting a room' });
   }
 });
+
+// Get a room
 router.get('/:id', checkIfLoggedIn, async (req, res) => {
   try {
     const { id } = req.params;
-    const room = await Room.findById(id).populate('chat');
-    console.log(room);
+    const room = await Room.findById(id)
+      .populate('chat')
+      .populate({ path: 'chat', populate: { path: 'conversation.user' } })
+      .populate('activeUsers');
+
     res.json(room);
   } catch (error) {
     res.status(300).json({ code: 'error on getting a room' });
   }
 });
 
-router.post('/', checkIfLoggedIn, async (req, res) => {
+// Create a room
+router.post('/new', checkIfLoggedIn, async (req, res) => {
   let newRoom = {};
   try {
     const {
@@ -88,18 +96,77 @@ router.post('/', checkIfLoggedIn, async (req, res) => {
         chat,
         privateRoom,
         adminList: [userId],
+        activeUsers: [],
         numMaxUser,
         theme,
         filter,
       });
       res.status(200).json(newRoom);
     } catch (error) {
+      console.log(error);
       res.status(300).json({ code: error });
     }
   } catch (error) {
+    console.log(error);
     res.status(300).json({ code: 'error on creating the room' });
   }
   return res.json(newRoom);
+});
+
+// Put new user into a room
+router.put('/:id/new-user', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const users = await Room.findById(id, { activeUsers: 1 }).populate(
+      'activeUsers',
+    );
+
+    const user = users.activeUsers.filter(
+      el => el._id == req.session.currentUser._id,
+    );
+
+    if (user.length === 0) {
+      const room = await Room.findByIdAndUpdate(
+        id,
+        {
+          $push: {
+            activeUsers: req.session.currentUser._id,
+          },
+        },
+        { safe: true, upsert: true, new: true },
+      ).populate('activeUsers');
+
+      global.io.sockets.emit('user-in-chat', room.activeUsers);
+      res.json(room);
+    } else {
+      global.io.sockets.emit('user-in-chat', users.activeUsers);
+      res.status(200).json('');
+    }
+  } catch (error) {
+    res.status(300).json({ code: '' });
+  }
+});
+// Put new user into a room
+router.delete('/:id/delete-user', async (req, res, next) => {
+  const { id } = req.params;
+  console.log('delete', id);
+  try {
+    const room = await Room.findByIdAndUpdate(
+      id,
+      {
+        $pull: {
+          activeUsers: req.session.currentUser._id,
+        },
+      },
+      { safe: true, upsert: true, new: true },
+    ).populate('activeUsers');
+
+    global.io.sockets.emit('user-in-chat', room.activeUsers);
+
+    res.json(room);
+  } catch (error) {
+    res.status(300).json({ code: '' });
+  }
 });
 
 module.exports = router;
