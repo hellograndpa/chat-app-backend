@@ -57,7 +57,7 @@ router.get('/:id', checkIfLoggedIn, async (req, res) => {
   }
 });
 
-router.post('/', checkIfLoggedIn, async (req, res) => {
+router.post('/new', checkIfLoggedIn, async (req, res) => {
   let newRoom = {};
   try {
     const {
