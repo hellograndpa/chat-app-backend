@@ -64,10 +64,7 @@ router.get('/:id', checkIfLoggedIn, async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 // Create a room
-=======
->>>>>>> a-dev
 router.post('/new', checkIfLoggedIn, async (req, res) => {
   let newRoom = {};
   try {
