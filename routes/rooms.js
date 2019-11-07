@@ -101,6 +101,8 @@ router.post('/new', checkIfLoggedIn, async (req, res) => {
         theme,
         filter,
       });
+      global.io.emit('room-created', newRoom);
+
       res.status(200).json(newRoom);
     } catch (error) {
       console.log(error);

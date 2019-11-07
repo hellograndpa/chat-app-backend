@@ -72,6 +72,9 @@ router.post(
             type: 'Point',
           },
         });
+
+        global.io.emit('user-connected', user);
+
         return res.json(user);
       }
       return res.status(404).json({ code: 'not-found' });

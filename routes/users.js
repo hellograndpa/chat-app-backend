@@ -66,8 +66,6 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-module.exports = router;
-
 // update the data  // use req.body
 router.put('/:id', async (req, res, next) => {
   const {
