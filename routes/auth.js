@@ -21,7 +21,9 @@ router.post(
   '/signup',
   checkUsernameAndPasswordNotEmpty,
   async (req, res, next) => {
-    const { userName, email, password } = res.locals.auth;
+    const {
+ userName, email, password, latitude, longitude 
+} = res.locals.auth;
     try {
       const user = await User.findOne({ email });
 
@@ -37,6 +39,10 @@ router.post(
         userName,
         email,
         hashedPassword,
+        location: {
+          coordinates: [latitude, longitude],
+          type: 'Point',
+        },
       });
       req.session.currentUser = newUser;
       return res.json(newUser);
