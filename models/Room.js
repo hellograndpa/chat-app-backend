@@ -27,9 +27,7 @@ const roomSchema = new Schema(
     numMaxUser: Number,
     theme: String,
     language: String,
-    activeUsers: [
-      { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true },
-    ],
+    activeUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     filter: {
       single: Boolean,
       family: Boolean,
