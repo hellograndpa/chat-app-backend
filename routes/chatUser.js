@@ -2,6 +2,8 @@ const express = require('express');
 
 const ChatUser = require('../models/ChatUser');
 
+const User = require('../models/User');
+
 const router = express.Router();
 
 // Create chatUser
@@ -21,7 +23,7 @@ router.post('/', async (req, res, next) => {
   res.redirect('/');
 });
 
-// get chat between users
+// get my private chats
 router.get('/:userId', async (req, res, next) => {
   const { userId } = req.params;
   try {
@@ -35,15 +37,31 @@ router.get('/:userId', async (req, res, next) => {
         status: 1,
       },
     ).populate('userChat01 userChat02');
-    if (chatUser) {
-      console.log('TCL: chatUser', chatUser);
 
+    if (chatUser) {
       res.json(chatUser);
     } else {
       res.status(404).json({ code: 'no existe' });
     }
   } catch (error) {
     console.log('Some error happen - Please try again');
+    res.redirect('/');
+  }
+});
+
+// get a private chat
+router.get('/private/:id', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const chatUser = await ChatUser.findById(id)
+      .populate('userChat01 userChat02')
+      .populate('conversation.user');
+    if (chatUser) {
+      res.json(chatUser);
+    } else {
+      res.status(404).json({ code: 'no existe' });
+    }
+  } catch (error) {
     res.redirect('/');
   }
 });
@@ -73,33 +91,32 @@ router.get('/me/:id', async (req, res, next) => {
 
 // update the data  // use req.body
 router.put('/:id', async (req, res, next) => {
-  const { userId, text, id } = req.body;
+  const { text } = req.body;
+  const { id } = req.params;
+
   try {
-    const chatUser = await ChatUser.findById(id);
-    if (
-      (userId == chatUser.userChat01 || userId == chatUser.userChat02)
-      && chatUser.status === 'active'
-    ) {
-      await ChatUser.findByIdAndUpdate(
-        { _id: id },
-        {
-          conversation: [
-            ...chatUser.conversation,
-            {
-              user: userId,
-              text,
-            },
-          ],
-        },
-      );
-      res.status(200).json({ code: 'modificado chat' });
-    } else {
-      res
-        .status(404)
-        .json({ code: `no existe - ${userId} - ${chatUser.userChat01}` });
-    }
+    const user = await User.findById(req.session.currentUser._id);
+
+    const returnedConversation = {
+      user,
+      text,
+    };
+
+    const conversation = { user: req.session.currentUser._id, text };
+    const chat = await ChatUser.findByIdAndUpdate(
+      id,
+      {
+        $push: { conversation },
+      },
+      { new: true },
+    ).populate('conversation');
+    console.log(chat);
+
+    global.io.sockets.emit(id, returnedConversation);
+
+    res.status(200).json(chat);
   } catch (error) {
-    console.log(error);
+    res.status(300).json({ code: 'error on posting a chat' });
   }
 });
 
