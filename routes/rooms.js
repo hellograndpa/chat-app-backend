@@ -64,10 +64,7 @@ router.get('/:id', checkIfLoggedIn, async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 // Create a room
-=======
->>>>>>> a-dev
 router.post('/new', checkIfLoggedIn, async (req, res) => {
   let newRoom = {};
   try {
@@ -85,7 +82,7 @@ router.post('/new', checkIfLoggedIn, async (req, res) => {
       family,
       pet,
     } = req.body;
-    const location = { type: 'Point', coordinates: [longitude, latitude] };
+    const location = { type: 'Point', coordinates: [latitude, longitude] };
     const userId = req.session.currentUser._id;
     const filter = { single, family, pet };
     const chat = await createChat();

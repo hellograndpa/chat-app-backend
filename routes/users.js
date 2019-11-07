@@ -7,10 +7,11 @@ const router = express.Router();
 const { checkIfLoggedIn, metersToRadian } = require('../middlewares');
 
 // Get user listing all
-router.get('/', async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   try {
-    const { lat, long, radiusInMeters } = req.query;
-    const coords = [parseFloat(lat), parseFloat(long)];
+    const { latitude, longitude, radiusInMeters } = req.body;
+
+    const coords = [parseFloat(latitude), parseFloat(longitude)];
 
     const users = await User.find(
       {
