@@ -12,6 +12,9 @@ const userSchema = new Schema(
     city: { type: String },
     age: { type: Number },
     active: Boolean,
+    rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Room' }],
+    themnes: [String],
+    distanceFromMe: Number,
     location: {
       type: {
         type: String,
