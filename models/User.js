@@ -5,12 +5,12 @@ const { Schema } = mongoose;
 const userSchema = new Schema(
   {
     userName: { type: String, required: true },
-    lastName: { type: String },
+    lastName: { type: String, default: '' },
     hashedPassword: { type: String, required: true },
     email: { type: String, require: true, unique: true },
     avatar: { type: String, default: 'image.jpg' },
-    city: { type: String },
-    age: { type: Number },
+    city: { type: String, default: '' },
+    age: { type: Number, default: 0 },
     active: Boolean,
     rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Room' }],
     themnes: [String],

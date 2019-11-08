@@ -69,14 +69,22 @@ router.get('/:id', async (req, res, next) => {
 // update the data  // use req.body
 router.put('/:id', async (req, res, next) => {
   const {
- userName, lastName, city, age, latitude, longitude 
-} = req.body;
+    userName,
+    lastName,
+    city,
+    age,
+    email,
+    latitude,
+    longitude,
+  } = req.body;
+  console.log('TCL: req.body', req.body);
   try {
-    await User.findByIdAndUpdate(req.session.currentUser, {
+    await User.findByIdAndUpdate(req.session.currentUser._id, {
       userName,
       lastName,
+      email,
+      age: Number(age),
       city,
-      age,
       location: {
         coordinates: [latitude, longitude],
       },
@@ -84,7 +92,7 @@ router.put('/:id', async (req, res, next) => {
 
     res.status(200).json({ code: 'modificado' });
   } catch (error) {
-    console.log('Some error happen - Please try again');
+    console.log(error);
     res.redirect('/');
   }
 });
