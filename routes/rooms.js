@@ -1,7 +1,5 @@
 const express = require('express');
 
-const mongoose = require('mongoose');
-
 const Room = require('../models/Room');
 
 const ChatRoom = require('../models/ChatRoom');
@@ -56,7 +54,8 @@ router.get('/:id', checkIfLoggedIn, async (req, res) => {
     const room = await Room.findById(id)
       .populate('chat')
       .populate({ path: 'chat', populate: { path: 'conversation.user' } })
-      .populate('activeUsers');
+      .populate('activeUsers')
+      .populate({ path: 'adminList', populate: { path: 'User' } });
 
     res.json(room);
   } catch (error) {
@@ -115,6 +114,33 @@ router.post('/new', checkIfLoggedIn, async (req, res) => {
   return res.json(newRoom);
 });
 
+// Modify a Room
+router.put('/:id', async (req, res, next) => {
+  const { id } = req.params;
+  const {
+    roomName,
+    description,
+    adminList,
+    userBanList,
+    avatar,
+    city,
+    theme,
+  } = req.body;
+  try {
+    await Room.findByIdAndUpdate(id, {
+      roomName,
+      description,
+      adminList,
+      userBanList,
+      avatar,
+      city,
+      theme,
+    });
+    res.status(200).json({ code: 'Room Modified' });
+  } catch (error) {
+    res.status(300).json({ code: '' });
+  }
+});
 // Put new user into a room
 router.put('/:id/new-user', async (req, res, next) => {
   const { id } = req.params;
