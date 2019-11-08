@@ -3,6 +3,8 @@ const express = require('express');
 const ChatRoom = require('../models/ChatRoom');
 const User = require('../models/User');
 
+const SocketManager = require('../services/socket');
+
 const router = express.Router();
 
 // put a text into the chat
@@ -27,7 +29,7 @@ router.put('/:id', async (req, res, next) => {
       { new: true },
     ).populate('conversation');
 
-    global.io.sockets.emit(id, returnedConversation);
+    SocketManager.emitMessage(id, returnedConversation);
 
     res.json(chat);
   } catch (error) {
