@@ -24,7 +24,9 @@ router.post(
     const {
  userName, email, password, latitude, longitude 
 } = res.locals.auth;
+
     try {
+      console.log(res.locals.auth);
       const user = await User.findOne({ email });
 
       if (user) {

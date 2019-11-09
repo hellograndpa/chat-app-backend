@@ -18,9 +18,9 @@ const checkUsernameAndPasswordNotEmpty = (req, res, next) => {
   }
 };
 
-const metersToRadian = (meters) => {
+const metersToRadian = (km) => {
   const earthRadiusInKm = 6378.1;
-  return meters / earthRadiusInKm;
+  return km / earthRadiusInKm;
 };
 
 module.exports = {

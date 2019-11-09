@@ -77,20 +77,23 @@ router.put('/:id', async (req, res, next) => {
     latitude,
     longitude,
   } = req.body;
-  console.log('TCL: req.body', req.body);
+  const { id } = req.params;
   try {
-    await User.findByIdAndUpdate(req.session.currentUser._id, {
-      userName,
-      lastName,
-      email,
-      age: Number(age),
-      city,
-      location: {
-        coordinates: [latitude, longitude],
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        userName,
+        lastName,
+        email,
+        age: Number(age),
+        city,
+        location: {
+          coordinates: [latitude, longitude],
+        },
       },
-    });
-
-    res.status(200).json({ code: 'modificado' });
+      { new: true },
+    );
+    res.status(200).json(user);
   } catch (error) {
     console.log(error);
     res.redirect('/');
