@@ -42,18 +42,7 @@ router.post('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
-    const user = await User.findById(
-      { _id: id },
-      {
-        _id: 1,
-        userName: 1,
-        lastName: 1,
-        city: 1,
-        email: 1,
-        age: 1,
-        location: 1,
-      },
-    );
+    const user = await User.findById({ _id: id });
     if (user) {
       res.json(user);
     } else {
@@ -77,20 +66,42 @@ router.put('/:id', async (req, res, next) => {
     latitude,
     longitude,
   } = req.body;
-  console.log('TCL: req.body', req.body);
+  const { id } = req.params;
   try {
-    await User.findByIdAndUpdate(req.session.currentUser._id, {
-      userName,
-      lastName,
-      email,
-      age: Number(age),
-      city,
-      location: {
-        coordinates: [latitude, longitude],
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        userName,
+        lastName,
+        email,
+        age: Number(age),
+        city,
+        location: {
+          coordinates: [latitude, longitude],
+        },
       },
-    });
+      { new: true },
+    );
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.redirect('/');
+  }
+});
 
-    res.status(200).json({ code: 'modificado' });
+// update the data  // use req.body
+router.put('/:id/image', async (req, res, next) => {
+  const { avatar } = req.body;
+  const { id } = req.params;
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        avatar,
+      },
+      { new: true },
+    );
+    res.status(200).json(user);
   } catch (error) {
     console.log(error);
     res.redirect('/');

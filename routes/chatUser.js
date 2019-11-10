@@ -4,6 +4,8 @@ const ChatUser = require('../models/ChatUser');
 
 const User = require('../models/User');
 
+const SocketManager = require('../services/socket');
+
 const router = express.Router();
 
 // Create chatUser
@@ -102,19 +104,19 @@ router.put('/:id', async (req, res, next) => {
       text,
     };
 
+    SocketManager.emitMessage(id, returnedConversation);
+
     const conversation = { user: req.session.currentUser._id, text };
-    const chat = await ChatUser.findByIdAndUpdate(
+
+    ChatUser.findByIdAndUpdate(
       id,
       {
         $push: { conversation },
       },
       { new: true },
-    ).populate('conversation');
-    console.log(chat);
+    );
 
-    global.io.sockets.emit(id, returnedConversation);
-
-    res.status(200).json(chat);
+    res.status(200).json('');
   } catch (error) {
     res.status(300).json({ code: 'error on posting a chat' });
   }
@@ -130,8 +132,8 @@ router.put('/:id/:status', async (req, res, next) => {
       res.status(300).json({ code: 'status is not correct' });
     }
     if (
-      (status === 'active' || status === 'refused')
-      && userId != chatUser.userChat02
+      (status === 'active' || status === 'refused') &&
+      userId != chatUser.userChat02
     ) {
       res
         .status(300)

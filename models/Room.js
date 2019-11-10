@@ -23,7 +23,7 @@ const roomSchema = new Schema(
     avatar: { type: String, default: 'image.jpg' },
     city: { type: String },
     chat: { type: mongoose.Schema.Types.ObjectId, ref: 'ChatRoom' },
-    privateRoom: Boolean,
+    privateRoom: { type: Boolean, default: false },
     numMaxUser: Number,
     theme: String,
     language: String,
