@@ -20,7 +20,10 @@ const roomSchema = new Schema(
     adminList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     userAdmitList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     userBanList: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    avatar: { type: String, default: 'image.jpg' },
+    avatar: {
+      type: String,
+      default: 'https://engineering.fb.com/wp-content/uploads/2009/02/chat.jpg',
+    },
     city: { type: String },
     chat: { type: mongoose.Schema.Types.ObjectId, ref: 'ChatRoom' },
     privateRoom: { type: Boolean, default: false },

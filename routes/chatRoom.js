@@ -19,17 +19,12 @@ router.put('/:id', async (req, res, next) => {
       user,
       text,
     };
+    SocketManager.emitMessage(id, returnedConversation);
 
     const conversation = { user: req.session.currentUser._id, text };
-    const chat = await ChatRoom.findByIdAndUpdate(
-      id,
-      {
-        $push: { conversation },
-      },
-      { new: true },
-    ).populate('conversation');
-
-    SocketManager.emitMessage(id, returnedConversation);
+    const chat = await ChatRoom.findByIdAndUpdate(id, {
+      $push: { conversation },
+    });
 
     res.json(chat);
   } catch (error) {
