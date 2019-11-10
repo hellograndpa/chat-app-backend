@@ -28,7 +28,7 @@ router.post('/', checkIfLoggedIn, async (req, res) => {
       'location.coordinates': {
         $geoWithin: { $centerSphere: [coords, metersToRadian(radiusInMeters)] },
       },
-    });
+    }).sort({ updated_at: -1 });
 
     res.json(rooms);
   } catch (error) {
@@ -81,6 +81,7 @@ router.post('/new', checkIfLoggedIn, async (req, res) => {
       family,
       pet,
     } = req.body;
+
     const location = { type: 'Point', coordinates: [latitude, longitude] };
     const userId = req.session.currentUser._id;
     const filter = { single, family, pet };
