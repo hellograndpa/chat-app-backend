@@ -42,7 +42,7 @@ app.use(
     secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true,
-    name: ‘talk-ih’, // configuracion del nombre de la cookie
+    name: 'talk-ih', // configuracion del nombre de la cookie
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: ‘none’, // esta es la linea importante
