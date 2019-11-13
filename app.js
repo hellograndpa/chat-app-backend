@@ -32,7 +32,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 app.use(
   session({
     store: new MongoStore({
@@ -45,7 +44,7 @@ app.use(
     name: 'talk-ih', // configuracion del nombre de la cookie
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite: ‘none’, // esta es la linea importante
+      sameSite: 'none', // esta es la linea importante
       secure: process.env.NODE_ENV === 'production',
     },
   }),
