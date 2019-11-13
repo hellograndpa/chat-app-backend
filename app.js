@@ -5,7 +5,10 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const cors = require('cors')({ origin: true, credentials: true });
+const cors = require('cors')({
+  origin: true,
+  credentials: true,
+});
 require('dotenv').config();
 
 mongoose.set('useCreateIndex', true);
@@ -41,7 +44,7 @@ app.use(
     secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true,
-    name: 'talk-ih', // configuracion del nombre de la cookie
+    name: 'talk-in', // configuracion del nombre de la cookie
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: 'none', // esta es la linea importante
