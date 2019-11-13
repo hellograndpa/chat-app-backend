@@ -23,15 +23,15 @@ const chatRoomRouter = require('./routes/chatRoom');
 const uploadRouter = require('./routes/upload');
 
 const app = express();
+app.set(‘trust proxy’, true);
+app.use(cors);
+app.options(‘*’, cors);
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.set(‘trust proxy’, true);
-app.use(cors);
-app.options(‘*’, cors);
 
 app.use(
   session({
@@ -46,7 +46,7 @@ app.use(
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: ‘none’, // esta es la linea importante
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
     },
   }),
 );
