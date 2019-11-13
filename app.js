@@ -5,7 +5,7 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const cors = require(‘cors’)({ origin: true, credentials: true });
+const cors = require('cors')({ origin: true, credentials: true });
 require('dotenv').config();
 
 mongoose.set('useCreateIndex', true);
@@ -23,9 +23,9 @@ const chatRoomRouter = require('./routes/chatRoom');
 const uploadRouter = require('./routes/upload');
 
 const app = express();
-app.set(‘trust proxy’, true);
+app.set('trust proxy', true);
 app.use(cors);
-app.options(‘*’, cors);
+app.options('*', cors);
 
 app.use(logger('dev'));
 app.use(express.json());
