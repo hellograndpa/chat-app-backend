@@ -106,4 +106,10 @@ router.get('/abandon', async (req, res, next) => {
     active: false,
   });
 });
+router.get('/remember', async (req, res, next) => {
+  global.io.emit('login', req.session.currentUser);
+  await User.findByIdAndUpdate(req.session.currentUser._id, {
+    active: true,
+  });
+});
 module.exports = router;
