@@ -73,9 +73,10 @@ router.post(
             coordinates: [latitude, longitude],
             type: 'Point',
           },
+          active: true,
         });
 
-        global.io.emit('user-connected', user);
+        global.io.emit('login');
 
         return res.json(user);
       }
@@ -86,7 +87,11 @@ router.post(
   },
 );
 
-router.get('/logout', (req, res, next) => {
+router.get('/logout', async (req, res, next) => {
+  await User.findByIdAndUpdate(req.session.currentUser._id, {
+    active: false,
+  });
+
   req.session.destroy((err) => {
     if (err) {
       next(err);
@@ -95,4 +100,10 @@ router.get('/logout', (req, res, next) => {
   });
 });
 
+router.get('/abandon', async (req, res, next) => {
+  global.io.emit('logout', req.session.currentUser);
+  await User.findByIdAndUpdate(req.session.currentUser._id, {
+    active: false,
+  });
+});
 module.exports = router;
