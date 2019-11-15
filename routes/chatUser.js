@@ -50,6 +50,35 @@ router.get('/:userId', async (req, res, next) => {
     res.redirect('/');
   }
 });
+// get my private chats between two users
+router.get('/between/:userId01/:userId02', async (req, res, next) => {
+  const { userId01, userId02 } = req.params;
+  try {
+    const chatUser = await ChatUser.findOne(
+      {
+        $and: [
+          { $or: [{ userChat01: userId01 }, { userChat02: userId01 }] },
+          { $or: [{ userChat01: userId02 }, { userChat02: userId02 }] },
+        ],
+      },
+      {
+        _id: 1,
+        userChat01: 1,
+        userChat02: 1,
+        status: 1,
+      },
+    ).populate('userChat01 userChat02');
+
+    if (chatUser) {
+      res.json(chatUser);
+    } else {
+      res.status(404).json({ code: 'no existe' });
+    }
+  } catch (error) {
+    console.log('Some error happen - Please try again');
+    res.redirect('/');
+  }
+});
 
 // get a private chat
 router.get('/private/:id', async (req, res, next) => {
@@ -132,8 +161,8 @@ router.put('/:id/:status', async (req, res, next) => {
       res.status(300).json({ code: 'status is not correct' });
     }
     if (
-      (status === 'active' || status === 'refused') &&
-      userId != chatUser.userChat02
+      (status === 'active' || status === 'refused')
+      && userId != chatUser.userChat02
     ) {
       res
         .status(300)
