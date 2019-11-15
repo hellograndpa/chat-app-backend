@@ -13,7 +13,7 @@ const userSchema = new Schema(
     age: { type: Number, default: 0 },
     active: Boolean,
     rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Room' }],
-    themnes: [String],
+    themes: [String],
     distanceFromMe: Number,
     location: {
       type: {

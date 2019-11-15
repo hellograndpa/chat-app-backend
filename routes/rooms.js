@@ -55,6 +55,7 @@ router.get('/:id', checkIfLoggedIn, async (req, res) => {
       .populate('chat')
       .populate({ path: 'chat', populate: { path: 'conversation.user' } })
       .populate('activeUsers')
+      .populate('participatedUsers')
       .populate({ path: 'adminList', populate: { path: 'User' } });
 
     res.json(room);
@@ -142,6 +143,7 @@ router.put('/:id', async (req, res, next) => {
     res.status(300).json({ code: '' });
   }
 });
+
 // Put new user into a room
 router.put('/:id/new-user', async (req, res, next) => {
   const { id } = req.params;
@@ -165,10 +167,11 @@ router.put('/:id/new-user', async (req, res, next) => {
         { safe: true, upsert: true, new: true },
       ).populate('activeUsers');
 
-      global.io.sockets.emit('user-in-chat', room.activeUsers);
+      global.io.sockets.emit(`user-in-chat-${id}`, room.activeUsers);
+
       res.json(room);
     } else {
-      global.io.sockets.emit('user-in-chat', users.activeUsers);
+      global.io.sockets.emit(`user-in-chat-${id}`, users.activeUsers);
       res.status(200).json('');
     }
   } catch (error) {
@@ -178,7 +181,6 @@ router.put('/:id/new-user', async (req, res, next) => {
 // Put new user into a room
 router.delete('/:id/delete-user', async (req, res, next) => {
   const { id } = req.params;
-  console.log('delete', id);
   try {
     const room = await Room.findByIdAndUpdate(
       id,
@@ -190,7 +192,7 @@ router.delete('/:id/delete-user', async (req, res, next) => {
       { safe: true, upsert: true, new: true },
     ).populate('activeUsers');
 
-    global.io.sockets.emit('user-in-chat', room.activeUsers);
+    global.io.sockets.emit(`user-in-chat-${id}`, room.activeUsers);
 
     res.json(room);
   } catch (error) {

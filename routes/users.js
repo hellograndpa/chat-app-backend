@@ -4,7 +4,7 @@ const User = require('../models/User');
 
 const router = express.Router();
 
-const { checkIfLoggedIn, metersToRadian } = require('../middlewares');
+const { metersToRadian } = require('../middlewares');
 
 // Get user listing all
 router.post('/', async (req, res, next) => {
@@ -29,6 +29,8 @@ router.post('/', async (req, res, next) => {
         email: 1,
         age: 1,
         location: 1,
+        avatar: 1,
+        active: 1,
       },
     );
     res.json(users);

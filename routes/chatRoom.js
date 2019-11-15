@@ -1,6 +1,9 @@
 const express = require('express');
 
 const ChatRoom = require('../models/ChatRoom');
+
+const Room = require('../models/Room');
+
 const User = require('../models/User');
 
 const SocketManager = require('../services/socket');
@@ -19,11 +22,27 @@ router.put('/:id', async (req, res, next) => {
       user,
       text,
     };
+
     SocketManager.emitMessage(id, returnedConversation);
 
     const conversation = { user: req.session.currentUser._id, text };
     const chat = await ChatRoom.findByIdAndUpdate(id, {
       $push: { conversation },
+    });
+
+    const room = await Room.findOneAndUpdate(
+      { chat: id },
+      {
+        $addToSet: {
+          participatedUsers: req.session.currentUser._id,
+        },
+      },
+    );
+
+    await User.findByIdAndUpdate(req.session.currentUser._id, {
+      $addToSet: {
+        themes: room.theme,
+      },
     });
 
     res.json(chat);
