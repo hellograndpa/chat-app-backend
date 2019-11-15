@@ -31,6 +31,7 @@ const roomSchema = new Schema(
     theme: String,
     language: String,
     activeUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    participatedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     filter: {
       single: Boolean,
       family: Boolean,

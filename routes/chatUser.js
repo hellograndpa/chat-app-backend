@@ -91,7 +91,7 @@ router.get('/me/:id', async (req, res, next) => {
   }
 });
 
-// update the data  // use req.body
+// update the data
 router.put('/:id', async (req, res, next) => {
   const { text } = req.body;
   const { id } = req.params;
@@ -108,13 +108,9 @@ router.put('/:id', async (req, res, next) => {
 
     const conversation = { user: req.session.currentUser._id, text };
 
-    ChatUser.findByIdAndUpdate(
-      id,
-      {
-        $push: { conversation },
-      },
-      { new: true },
-    );
+    await ChatUser.findByIdAndUpdate(id, {
+      $push: { conversation },
+    });
 
     res.status(200).json('');
   } catch (error) {
@@ -132,8 +128,8 @@ router.put('/:id/:status', async (req, res, next) => {
       res.status(300).json({ code: 'status is not correct' });
     }
     if (
-      (status === 'active' || status === 'refused') &&
-      userId != chatUser.userChat02
+      (status === 'active' || status === 'refused')
+      && userId != chatUser.userChat02
     ) {
       res
         .status(300)

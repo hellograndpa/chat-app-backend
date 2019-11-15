@@ -55,6 +55,7 @@ router.get('/:id', checkIfLoggedIn, async (req, res) => {
       .populate('chat')
       .populate({ path: 'chat', populate: { path: 'conversation.user' } })
       .populate('activeUsers')
+      .populate('participatedUsers')
       .populate({ path: 'adminList', populate: { path: 'User' } });
 
     res.json(room);
@@ -142,6 +143,7 @@ router.put('/:id', async (req, res, next) => {
     res.status(300).json({ code: '' });
   }
 });
+
 // Put new user into a room
 router.put('/:id/new-user', async (req, res, next) => {
   const { id } = req.params;
@@ -166,6 +168,7 @@ router.put('/:id/new-user', async (req, res, next) => {
       ).populate('activeUsers');
 
       global.io.sockets.emit(`user-in-chat-${id}`, room.activeUsers);
+
       res.json(room);
     } else {
       global.io.sockets.emit(`user-in-chat-${id}`, users.activeUsers);
