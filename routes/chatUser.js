@@ -168,12 +168,33 @@ router.put('/:id/:status', async (req, res, next) => {
       res.status(300).json({ code: 'user is not correct' });
     }
 
-    await ChatUser.findByIdAndUpdate(
+    const chat = await ChatUser.findByIdAndUpdate(
       { _id: id },
       {
         status,
       },
-    );
+    ).populate('userChat01 userChat02');
+
+    if (userId !== chatUser.userChat02) {
+      const returnedConversation = {
+        text: `${chat.userChat02.userName} ${chat.userChat02.lastName} has accepted your invitation`,
+      };
+
+      SocketManager.emitMessage(
+        'messageToUser-' + chatUser.userChat01,
+        returnedConversation,
+      );
+    } else {
+      const returnedConversation = {
+        text: `${chat.userChat01.userName} ${chat.userChat01.lastName} has accepted your invitation`,
+      };
+
+      SocketManager.emitMessage(
+        'messageToUser-' + chatUser.userChat02,
+        returnedConversation,
+      );
+    }
+
     res.status(200).json({ code: `${status} state modificated` });
   } catch (error) {
     console.log(error);

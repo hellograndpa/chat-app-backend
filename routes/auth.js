@@ -105,11 +105,13 @@ router.get('/abandon', async (req, res, next) => {
   await User.findByIdAndUpdate(req.session.currentUser._id, {
     active: false,
   });
+  return res.status(200);
 });
 router.get('/remember', async (req, res, next) => {
   global.io.emit('login', req.session.currentUser);
   await User.findByIdAndUpdate(req.session.currentUser._id, {
     active: true,
   });
+  return res.status(200);
 });
 module.exports = router;
