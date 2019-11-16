@@ -17,11 +17,22 @@ router.post('/', async (req, res, next) => {
       userChat01,
       userChat02,
       status: 'pending',
-    });
+    }).populate('userChat01 userChat02');
+
+    const returnedConversation = {
+      text: `${newChatUser.userChat01.userName} ${newChatUser.userChat01.lastName} has sent you an invitation"`,
+    };
+
+    SocketManager.emitMessage(
+      'messageToUser-' + chatUser.userChat02,
+      returnedConversation,
+    );
+
     return res.json(newChatUser);
   } catch (error) {
     console.log('Some error happen - Please try again');
   }
+
   res.redirect('/');
 });
 
