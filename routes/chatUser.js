@@ -24,16 +24,14 @@ router.post('/', async (req, res, next) => {
     };
 
     SocketManager.emitMessage(
-      'messageToUser-' + chatUser.userChat02,
+      `messageToUser-${newChatUser.userChat02._id}`,
       returnedConversation,
     );
 
     return res.json(newChatUser);
   } catch (error) {
-    console.log('Some error happen - Please try again');
+    next(error);
   }
-
-  res.redirect('/');
 });
 
 // get my private chats
@@ -54,13 +52,13 @@ router.get('/:userId', async (req, res, next) => {
     if (chatUser) {
       res.json(chatUser);
     } else {
-      res.status(404).json({ code: 'no existe' });
+      res.status(200).json({});
     }
   } catch (error) {
-    console.log('Some error happen - Please try again');
-    res.redirect('/');
+    next(error);
   }
 });
+
 // get my private chats between two users
 router.get('/between/:userId01/:userId02', async (req, res, next) => {
   const { userId01, userId02 } = req.params;
@@ -83,11 +81,10 @@ router.get('/between/:userId01/:userId02', async (req, res, next) => {
     if (chatUser) {
       res.json(chatUser);
     } else {
-      res.status(404).json({ code: 'no existe' });
+      res.status(200).json({});
     }
   } catch (error) {
-    console.log('Some error happen - Please try again');
-    res.redirect('/');
+    next(error);
   }
 });
 
@@ -101,10 +98,10 @@ router.get('/private/:id', async (req, res, next) => {
     if (chatUser) {
       res.json(chatUser);
     } else {
-      res.status(404).json({ code: 'no existe' });
+      res.status(200).json({});
     }
   } catch (error) {
-    res.redirect('/');
+    next(error);
   }
 });
 
@@ -126,8 +123,7 @@ router.get('/me/:id', async (req, res, next) => {
       res.status(404).json({ code: 'no existe' });
     }
   } catch (error) {
-    console.log('Some error happen - Please try again');
-    res.redirect('/');
+    next(error);
   }
 });
 
@@ -192,7 +188,7 @@ router.put('/:id/:status', async (req, res, next) => {
       };
 
       SocketManager.emitMessage(
-        'messageToUser-' + chatUser.userChat01,
+        `messageToUser-${chatUser.userChat01}`,
         returnedConversation,
       );
     } else {
@@ -201,14 +197,14 @@ router.put('/:id/:status', async (req, res, next) => {
       };
 
       SocketManager.emitMessage(
-        'messageToUser-' + chatUser.userChat02,
+        `messageToUser-${chatUser.userChat02}`,
         returnedConversation,
       );
     }
 
     res.status(200).json({ code: `${status} state modificated` });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });
 
