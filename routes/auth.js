@@ -94,6 +94,8 @@ router.post(
 );
 
 router.get('/logout', async (req, res, next) => {
+  global.io.emit('login');
+
   await User.findByIdAndUpdate(req.session.currentUser._id, {
     active: false,
   });

@@ -17,14 +17,16 @@ router.post('/', async (req, res, next) => {
       userChat01,
       userChat02,
       status: 'pending',
-    }).populate('userChat01 userChat02');
+    });
+    const usr01 = await User.findById(userChat01);
+    const usr02 = await User.findById(userChat02);
 
     const returnedConversation = {
-      text: `${newChatUser.userChat01.userName} ${newChatUser.userChat01.lastName} has sent you an invitation"`,
+      text: `${usr01.userName} ${usr01.lastName} has sent you an invitation"`,
     };
 
     SocketManager.emitMessage(
-      `messageToUser-${newChatUser.userChat02._id}`,
+      `messageToUser-${usr02._id}`,
       returnedConversation,
     );
 
