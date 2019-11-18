@@ -22,8 +22,13 @@ router.post(
   checkUsernameAndPasswordNotEmpty,
   async (req, res, next) => {
     const {
- userName, email, password, latitude, longitude 
-} = res.locals.auth;
+      userName,
+      email,
+      password,
+      latitude,
+      longitude,
+      active,
+    } = res.locals.auth;
 
     try {
       console.log(res.locals.auth);
@@ -40,6 +45,7 @@ router.post(
       const newUser = await User.create({
         userName,
         email,
+        active,
         hashedPassword,
         location: {
           coordinates: [latitude, longitude],
