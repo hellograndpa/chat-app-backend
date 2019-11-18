@@ -31,6 +31,7 @@ router.post('/', async (req, res, next) => {
         location: 1,
         avatar: 1,
         active: 1,
+        themes: 1,
       },
     );
     res.json(users);
