@@ -53,6 +53,9 @@ router.post(
         },
       });
       req.session.currentUser = newUser;
+
+      global.io.emit('login');
+
       return res.json(newUser);
     } catch (error) {
       next(error);
